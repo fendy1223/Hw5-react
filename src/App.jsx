@@ -12,6 +12,7 @@ function App() {
   const [tempProduct, setTempProduct] = useState([]);
   const [cart, setCart] = useState({});
   const [isScreenLoading, setIsScreenLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getCart = async () => {
     try {
@@ -62,6 +63,7 @@ function App() {
   const [qtySelect, setQtySelect] = useState(1);
 
   const addCartTtem = async (product_id, qty) => {
+    setIsLoading(true);
     try {
       await axios.post(`${BASE_URL}/v2/api/${API_PATH}/cart`, {
         data: {
@@ -72,6 +74,8 @@ function App() {
       getCart();
     } catch (error) {
       alert("加入購物車失敗");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -184,11 +188,20 @@ function App() {
                       查看更多
                     </button>
                     <button
+                      disabled={isLoading}
                       onClick={() => addCartTtem(product.id, 1)}
                       type="button"
-                      className="btn btn-outline-danger"
+                      className="btn btn-outline-danger d-flex align-items-center gap-2"
                     >
                       加到購物車
+                      {isLoading && (
+                        <ReactLoading
+                          type={"spin"}
+                          color={"#000"}
+                          height={"1.5rem"}
+                          width={"1.5rem"}
+                        />
+                      )}
                     </button>
                   </div>
                 </td>
@@ -248,11 +261,20 @@ function App() {
               </div>
               <div className="modal-footer">
                 <button
+                  disabled={isLoading}
                   onClick={() => addCartTtem(tempProduct.id, qtySelect)}
                   type="button"
-                  className="btn btn-primary"
+                  className="btn btn-primary d-flex align-items-center gap-2"
                 >
-                  加入購物車
+                  <div>加入購物車</div>
+                  {isLoading && (
+                    <ReactLoading
+                      type={"spin"}
+                      color={"#000"}
+                      height={"1.5rem"}
+                      width={"1.5rem"}
+                    />
+                  )}
                 </button>
               </div>
             </div>
